@@ -15,12 +15,10 @@ export default class ConfirmButton extends React.Component<any,any> {
             itsText,
             itsColor,
             hoverColor,
-            left,
-            top
         } = this.props;
 
        return( 
-            <OrderButton buttonColor = {itsColor} buttonHoverColor= {hoverColor} topPosition = {top} leftPosition = {left}>
+            <OrderButton buttonColor = {itsColor} buttonHoverColor= {hoverColor}>
                 <p>{itsText}</p>
             </OrderButton> 
        );

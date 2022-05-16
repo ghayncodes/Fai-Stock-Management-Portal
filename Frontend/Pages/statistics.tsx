@@ -1,5 +1,6 @@
 import * as React from 'react';
-import ConfirmButton from '../components/ConfirmButton';
+
+import BorderSection from '../components/BorderSection';
 
 import {
     StatContainer,
@@ -9,11 +10,8 @@ import {
 
 import { 
     lpObj, 
-    dashMPItemObj ,
-    reorderButtonObj
+    statMPItemObj ,
 } from '../components/Dashboard/MainData';
-import BorderSection from '../components/BorderSection';
-
 
 export default class Statistics extends React.Component<any, any> {
     render() {
@@ -21,8 +19,7 @@ export default class Statistics extends React.Component<any, any> {
             <>
                 <StatContainer>
                     <StatArea1>
-                        <BorderSection {...dashMPItemObj}/>
-                        <ConfirmButton {...reorderButtonObj}/>
+                        <BorderSection {...statMPItemObj}/>
                     </StatArea1>
                     <StatArea2>
                         <BorderSection {...lpObj}/> 

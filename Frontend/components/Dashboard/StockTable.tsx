@@ -97,7 +97,7 @@ const StockTableSection:React.FC<any> = () => {
                              : !itemsList.length ? 
                              <tr>
                                  <td style={{fontSize: 32, fontFamily: 'ManifaPro2'}}>
-                                     Nothing to show. Come back later!
+                                     No stock data available. Come back later!
                                  </td>
                              </tr> 
                             : tableList}

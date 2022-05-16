@@ -7,15 +7,16 @@ import {
     ItemName,
     ImageWrapper, 
     QRCodeWrapper
- } from '../Styles/ItemStyle';
-import Spinner from '../assets/animations/Spinner/spinner';
+ } from '../../Styles/ItemStyle';
+import Spinner from '../../assets/animations/Spinner/spinner';
 
  const CACHE = {};
 
  const ItemStatSection:React.FC<any> = (props) => {
 
     const {
-        url
+        url,
+        setMostPurchasedItem
     } = props;
 
     const[items, setItems] = React.useState([]);
@@ -52,8 +53,8 @@ import Spinner from '../assets/animations/Spinner/spinner';
 
             setItems(data.item);
             QRCode.toDataURL(data.item[0]._id).then(data => setItemQRCode(data));
-
             setLoaded(false);
+            setMostPurchasedItem(data.item[0]._id);
         })
         .catch( err => {
             setLoaded(false);

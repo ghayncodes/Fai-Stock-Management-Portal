@@ -29,7 +29,7 @@ Date.prototype.addDays = function() {
 // For broswer workaround of not allowing different server from client (local host)
 app.use((req,res,next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT');
     res.setHeader('Access-Control-allow-Headers', 'Content-Type, Authorization');
     // This request cannot be handled in graphql therefore return a state of 200
     if (req.method === 'OPTIONS') {
@@ -97,7 +97,7 @@ app.post('/reorderItem', async (req, res) => {
     }   
     else {
         console.log("Order already there!");
-        res.send({"Message": "There is an active order for this item already!"});         
+        res.send({"message": "There is an active order for this item already!"});         
     }
 }) 
    

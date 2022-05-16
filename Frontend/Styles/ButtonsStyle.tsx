@@ -1,18 +1,16 @@
 import styled from "styled-components";
 
 export const OrderButton = styled.button<{ buttonColor: string; buttonHoverColor:string;}>`
-    text-decoration: none;
     background: ${({buttonColor})=> (buttonColor)};
-    width: 330px;
     height: 50px;
     cursor: pointer;
     font-size: 1.6rem;
+    margin: 20px 10px;
     text-align: center;
-    padding-top: 10px;
     color: white;
     border-radius: 30px;
     white-space: nowrap;
-    padding: 12px 30px;
+    padding: 0px 30px;
     border: solid;
     border-color: ${({buttonColor})=> (buttonColor)};
     outline: none;

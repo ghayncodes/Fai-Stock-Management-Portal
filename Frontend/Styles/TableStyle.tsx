@@ -58,11 +58,11 @@ export const TableData2 = styled.td`
     font-size: 1rem;
     color: #5F6369;
     text-align: left;
-    padding-bottom: 3%;
+    padding: 2% 0;
 `
 
 export const ButtonContainer = styled.div`
-    display: grid;
-    grid-template-areas: "a" "b";
+    display: flex;
+    flex-direction: column;
 
 `

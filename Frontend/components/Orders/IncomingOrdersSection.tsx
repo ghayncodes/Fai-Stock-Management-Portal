@@ -3,9 +3,9 @@ import Moment from "react-moment";
 import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
-import Spinner from "../assets/animations/Spinner/spinner";
-import { OrderButton } from '../Styles/ButtonsStyle'
-import { ConfirmCell } from '../Styles/RadioButtonStyle';
+import Spinner from "../../assets/animations/Spinner/spinner";
+import { OrderButton } from '../../Styles/ButtonsStyle'
+import { ConfirmCell } from '../../Styles/RadioButtonStyle';
 
 import { 
     OrderContainer, 
@@ -17,13 +17,15 @@ import {
     TableHead, 
     TableRow,
     TableHeadRow
-} from '../Styles/TableStyle';
+} from '../../Styles/TableStyle';
 
 const CACHE = {};
 
 const IncomingOrderSection:React.FC<any> = (props) => {
 
     const {
+        url,
+        urlUpdate,
         recText,
         recColor,
         hoverRecColor,
@@ -32,13 +34,10 @@ const IncomingOrderSection:React.FC<any> = (props) => {
         hoverNotColor,
     } = props;
 
-    const url = "http://localhost:3000/getCompletedOrders"
-
     const [ordersList, setOrdersList] = React.useState([]) ;
-    const [ordersTempList, setTempList] = React.useState([])
-    const [selectedOrders, setSelectedOrders] = React.useState([]) ;
+    const [isCheckOrders, setIsCheckOrders] = React.useState([]);
 
-    const [parentChecked, setParentChecked] = React.useState(false) ;
+    const [isCheckAll, setIsCheckAll] = React.useState(false);
     const [isLoading, setLoaded] = React.useState(false);
 
     const[CacheKey, setCacheKey] = React.useState(0);
@@ -81,6 +80,22 @@ const IncomingOrderSection:React.FC<any> = (props) => {
             ac.abort(); // Abort both fetches on unmount
         }
     }, [CacheKey]);
+    
+    const onSelectAll = () => {
+        setIsCheckAll(!isCheckAll);
+        setIsCheckOrders(ordersList.map(order => order));
+        if (isCheckAll) {
+            setIsCheckOrders([]);
+        }
+    };
+
+    const onSelect = e => {
+        const { id, checked } = e.target;
+        setIsCheckOrders([...isCheckOrders, ordersList.find(order => order._id == id)]);
+        if (!checked) {
+            setIsCheckOrders(isCheckOrders.filter(order => order._id !== id));
+        }
+    };
 
     const tableList = ordersList.map((order, index)=>{
         return (
@@ -91,45 +106,20 @@ const IncomingOrderSection:React.FC<any> = (props) => {
                 <TableData2> 
                         <Moment format="DD/MM/YYYY">{order.orderIssueDate}</Moment>
                 </TableData2>
-                <TableData2>
-                    <ConfirmCell type="checkbox" checked={order.selected} onChange={(e) => onOrderCheck(e, order)}/>
+                <TableData2 style={{textAlign: 'center'}}>
+                    <ConfirmCell  
+                        id={order._id}
+                        type="checkbox" 
+                        onChange={onSelect}
+                        checked={isCheckOrders.includes(order)}
+                    />
                 </TableData2>
             </TableRow>
         )
     });
 
-    const onParentChecked = (e: any) => {
-        let tempList = ordersTempList;
-        tempList.map((order)=>{
-            order.selected = e.target.checked;
-        });
-
-        setParentChecked(e.target.checked);
-        setTempList(tempList);
-        setSelectedOrders(ordersTempList.filter((e)=>e.selected))
-    }
-
-    const onOrderCheck = (e: any, tempOrder) =>{
-        let tempList = ordersTempList;
-        tempList.map((order)=>{
-            if(order._id == tempOrder._id){
-                order.selected =  e.target.checked;
-            }
-            return order;
-        });
-
-        const totalOrders = ordersTempList.length;
-        const totalCheckedOrders = tempList.filter((e)=>e.selected).length;
-
-        setParentChecked(totalOrders === totalCheckedOrders);
-        setTempList(tempList);
-        setSelectedOrders(ordersTempList.filter((e)=>e.selected));
-    } 
-
-    const updateSelectedRows = async (status: string) =>{
-        setSelectedOrders(ordersTempList.filter((e)=>e.selected));
-        console.log(selectedOrders);
-/*         // PUT request to /updateOrderStatus       
+    const updateSelectedRows = async (status: string) => {
+        // PUT request to /updateOrderStatus       
         let request = {
             method: 'PUT',
             headers: {
@@ -137,15 +127,14 @@ const IncomingOrderSection:React.FC<any> = (props) => {
             },
             body: JSON.stringify({
                 status: status,
-                list: selectedOrders
+                list: isCheckOrders
             })
         }
-
         // Send request to update selected order states
-        await fetch(url , request).then( res => res.json() )
+        await fetch(urlUpdate, request).then( res => res.json() )
         .then( data => {
-            console.log(data.result);
-            toast(() => <div><h2>{ data.result }</h2></div>, {
+            console.log(data.message);
+            toast(() => <div><h2>{ data.message }</h2></div>, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -155,23 +144,33 @@ const IncomingOrderSection:React.FC<any> = (props) => {
                 progress: undefined,
             });
         })
-        .catch( err => console.log(err) ) */
+        .catch( err => console.log(err) )
     }
 
     return( 
         <>
             <OrderContainer>
                 <Table>
-                    <TableHeader>
+                    <TableHeader style={{height: '100px'}}>
                         <TableHeadRow>
-                            <TableHead>Order  ID</TableHead>
-                            <TableHead>Item</TableHead>
+                            <TableHead>Order ID</TableHead>
+                            <TableHead>Item ID</TableHead>
                             <TableHead>Quantity</TableHead>
                             <TableHead>Expected Date</TableHead>
-                            <TableHead>
-                                Confirm Status
-                                <ConfirmCell type="checkbox" checked={parentChecked} onChange={(e) => onParentChecked(e)}/>
-                            </TableHead>
+                            { ordersList.length ? 
+                                <TableHead style={{ textAlign: 'center', paddingBottom: '0'}}>
+                                    <div  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                        <h4>Confirm Status</h4>
+                                        <ConfirmCell 
+                                            type="checkbox"
+                                            name="Select All"
+                                            id="selectAll"
+                                            onChange={onSelectAll}
+                                            checked={isCheckAll}                                    
+                                            />
+                                        <h4>Select All</h4>
+                                    </div>
+                                </TableHead> : null }
                         </TableHeadRow>
                     </TableHeader>
                     <TableBody>
@@ -182,7 +181,7 @@ const IncomingOrderSection:React.FC<any> = (props) => {
                             </td>
                         </tr> 
                         : !ordersList.length ? 
-                        <tr style={{textAlign: 'center', justifyContent: 'center'}}>
+                        <tr style={{textAlign: 'center', justifyContent: 'center', width:'100%'}}>
                             <td style={{fontSize: '1.8rem', width: '100%'}}>
                                 Nothing to show. Come back later!
                             </td>
@@ -191,11 +190,11 @@ const IncomingOrderSection:React.FC<any> = (props) => {
                     </TableBody>
                 </Table>
                 <ButtonContainer>
-                    <OrderButton onClick={(e)=>updateSelectedRows('Confirmed')} buttonColor={recColor} buttonHoverColor={hoverRecColor}>
+                    <OrderButton onClick={ e => updateSelectedRows('Confirmed')} buttonColor={recColor} buttonHoverColor={hoverRecColor}>
                         {recText}
                     </OrderButton> 
-                    <OrderButton onClick={(e)=>updateSelectedRows('Delayed')} buttonColor={notColor} buttonHoverColor={hoverNotColor}>
-                            {notText}
+                    <OrderButton onClick={ e => updateSelectedRows('Delayed')} buttonColor={notColor} buttonHoverColor={hoverNotColor}>
+                        {notText}
                     </OrderButton> 
                 </ButtonContainer>
             </OrderContainer>

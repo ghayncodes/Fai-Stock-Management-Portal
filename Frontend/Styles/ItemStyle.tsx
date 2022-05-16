@@ -24,8 +24,10 @@ export const ItemName = styled.h1`
 export const ImageWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 50%;
-    height: 50%; 
+    height: 50%;
 `;
 
 export const QRCodeWrapper = styled.div`

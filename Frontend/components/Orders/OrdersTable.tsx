@@ -1,7 +1,7 @@
 import * as React from "react";
 import Moment from "react-moment";
 
-import Spinner from '../assets/animations/Spinner/spinner';
+import Spinner from '../../assets/animations/Spinner/spinner';
 
 import { 
     Container, 
@@ -12,14 +12,11 @@ import {
     TableRow, 
     TableHeadRow,
     TableData2
-} from '../Styles/TableStyle';
+} from '../../Styles/TableStyle';
 
 const CACHE = {};
 
-const OrderTableSection:React.FC<any> = (props) => {
-    const { 
-        url
-    } = props;
+const OrderTableSection:React.FC<any> = ({ url }) => {
 
     const [ordersList, setOrdersList] = React.useState([]);
     const[CacheKey, setCacheKey] = React.useState(0);
@@ -101,7 +98,7 @@ const OrderTableSection:React.FC<any> = (props) => {
                     : !ordersList.length ? 
                     <tr style={{textAlign: 'center', justifyContent: 'center'}}>
                         <td style={{fontSize: '1.8rem', width: '100%'}}>
-                            Nothing to show. Come back later!
+                            Nothing orders to display. Come back later!
                         </td>
                     </tr> 
                     : tableList}
