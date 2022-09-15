@@ -26,7 +26,7 @@ Date.prototype.addDays = function() {
     return date;
 }
 
-// For broswer workaround of not allowing different server from client (local host)
+// For browser workaround of not allowing different server from client (local host)
 app.use((req,res,next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT');
@@ -54,7 +54,7 @@ checkStockLevels = function(quantity, threshold, status) {
     if(quantity == threshold || quantity >= threshold * 0.7 ) {
         status = "Full Stock";
     }
-    else if (quantity < threshold * 0.7 || quantity >= 0 ) {
+    else if (quantity < threshold * 0.7 || quantity > 0 ) {
         status = "Low Stock";
     }
     else if (quantity == 0) {
@@ -65,8 +65,9 @@ checkStockLevels = function(quantity, threshold, status) {
 
 // Main entry point to client
 app.get('/', (req, res) => {
-    res.render('index')
+    //res.render('index')
     console.log(req);
+    res.send("<h1>This is the stock server</h1>")
 });
 
 // REST API for DB Create OP using POST
@@ -100,6 +101,14 @@ app.post('/reorderItem', async (req, res) => {
         res.send({"message": "There is an active order for this item already!"});         
     }
 }) 
+
+// REST API for Alert Logging OP using POST
+app.post('/shelfAlert', async (req, res) => {
+    let shelfId = req.body.scaleID; // To know which shelf to go to
+    let misplacedUnits = req.body.units;
+    res.send({"message": "Staff Alerted Accordingly!"});      
+    console.log(`[NEW SHELF ALERT] Please check shelf number: ${shelfId}. There are ${misplacedUnits} misplaced units. Please verify and remove ASAP!`);
+}) 
    
 // REST API for DB Update OP using PUT
 app.put('/updateOrderStatus', async (req, res) => {
@@ -119,6 +128,51 @@ app.put('/updateOrderStatus', async (req, res) => {
         })
         .catch( err => console.log("Error something happened while updating orders status: ", err) );
     })  
+})
+
+// REST API for DB Update OP using PUT
+app.put('/updateShelfStockLevels', async (req, res) => {
+    let scaleID = req.body.scaleID; // To know which item to update
+    let itemStatus =  req.body.status; // Remove (Later after user), Add
+    let unitsSold = req.body.units;
+    let itemID = ObjectId("627d5b9a7facecfb87e742bf");
+
+    switch (scaleID) {
+        case 1:
+            await Item.findOne({
+                _id: itemID, // It's water item ID, since we know it's associated with Scale ID 1
+            }).then( currentItem => {
+                if (itemStatus == "Remove") {
+                    Item.updateOne({
+                        _id: itemID 
+                    }, {
+                        quantityOnShelf: currentItem.quantityOnShelf - unitsSold,
+                        quantitySold: currentItem.quantitySold + unitsSold
+                    }).then(() => { 
+                        console.log("Item Shelf Stock Levels Updated!");
+                        res.send({"message": "Item Stock levels have been updated successfully!"});            
+                    })
+                    .catch( err => console.log("Error something happened while updating item shelf stock status (REMOVE): ", err) );
+                }
+                else if (itemStatus == "Add" && currentItem.quantityOnShelf < currentItem.shelfThreshold) { // staff restocked, assuming add req with correct item variation
+                    Item.updateOne({
+                        _id: itemID 
+                    }, {
+                        quantityOnShelf: currentItem.quantityOnShelf + unitsSold,
+                    }).then(() => { 
+                        console.log("Item Restocked on shelf!");
+                        res.send({"message": "Item restocked on shelf successfully!"});            
+                    })
+                    .catch( err => console.log("Error something happened while updating item shelf stock status (ADD): ", err) );
+                }
+                else {
+                    res.send({"message": "Request Ignored. Shelf already full. Check for misplaced items"});
+                }
+            }).catch( err => console.log("Cannot perform update, item not found in db: ", err) );
+
+        default:
+            //res.send({"message": "Oops! Looks like you have included an imaginary shelf to the assets! Get back later when we expand our inventory"});            
+    } 
 })
 
 // REST API for DB Read OP using GET
@@ -210,9 +264,9 @@ mongoose.connect(
 )
 .then(() => {
     console.log("Server successfully connected to DB!")
-    app.listen(process.env.PORT);
+    app.listen(process.env.PORT, '192.168.146.94')
     console.log("Server Listening on Port: ", process.env.PORT);
 })
 .catch( err => {
     console.log("Oops! Something happended while trying to connect to DB: ", err);
-});
+}); 

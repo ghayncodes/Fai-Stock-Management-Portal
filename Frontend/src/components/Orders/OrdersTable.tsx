@@ -80,7 +80,7 @@ const OrderTableSection:React.FC<any> = ({ url }) => {
         <Container>
             <Table>
                 <TableHeader>
-                {isLoading  || !ordersList.length ? '' :
+                {isLoading  || !ordersList.length ? <tr></tr> :
                     <TableHeadRow>
                         <TableHead>Order ID</TableHead>
                         <TableHead>Item ID</TableHead>

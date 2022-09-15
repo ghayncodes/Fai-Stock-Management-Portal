@@ -16,7 +16,7 @@ import {
 const CACHE = {};
 
 const StockTableSection:React.FC<any> = () => {
-    const url = "http://localhost:3000/getStockLevels";
+    const url = "https://fai-stock-managment.herokuapp.com/getStockLevels";
 
     const [itemsList, setItemsList] = React.useState ([]) ;
     const[CacheKey, setCacheKey] = React.useState(0);
@@ -68,7 +68,7 @@ const StockTableSection:React.FC<any> = () => {
             <TableData stockLevel={"null"}>{item._id}</TableData>
             <TableData stockLevel={"null"}>{item.name}</TableData>
             <TableData stockLevel={item.shelfStatus}>{item.shelfStatus}</TableData>
-            <TableData stockLevel={item.shelfStatus}>{item.warehouseStatus}</TableData>
+            <TableData stockLevel={item.warehouseStatus}>{item.warehouseStatus}</TableData>
             <TableData stockLevel={"null"}>{item.quantitySold}</TableData>
         </TableRow>
         ) 

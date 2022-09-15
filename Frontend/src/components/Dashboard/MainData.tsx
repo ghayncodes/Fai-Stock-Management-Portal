@@ -9,7 +9,7 @@ import StatSection from '../Stats/StatsSections';
 
 // For Statistics most purchased item border container
 export const mostPurchasedObj = {
-    url: "http://localhost:3000/getMostPurchased"
+    url: "https://fai-stock-managment.herokuapp.com/getMostPurchased"
 }
 
 // For Dashboard most purchased item border container
@@ -23,8 +23,8 @@ export const reorderButtonObj = {
     itsText:'Reorder Item',
     itsColor: '#00A3E0',
     hoverColor: '#00ADEE',
-    url: "http://localhost:3000/getMostPurchased",
-    urlCreate: "http://localhost:3000/reorderItem",
+    url: "https://fai-stock-managment.herokuapp.com/getMostPurchased",
+    urlCreate: "https://fai-stock-managment.herokuapp.com/reorderItem",
 }
 
 // For Dashboard most purchased item border container
@@ -41,7 +41,7 @@ export const stockLevelObj = {
 
 // For Active order list table
 export const activeTableObj = {
-    url: "http://localhost:3000/getActiveOrders"
+    url: "https://fai-stock-managment.herokuapp.com/getActiveOrders"
 }
 
 // For Dashboard active orders list border container
@@ -52,7 +52,7 @@ export const activeOrderObj = {
 
 // For Delayed order list table
 export const delayTableObj = {
-    url: "http://localhost:3000/getDelayedOrders"
+    url: "https://fai-stock-managment.herokuapp.com/getDelayedOrders"
 }
 
 // For Dashboard delayed orders list border container
@@ -63,7 +63,7 @@ export const delayOrderObj = {
 
 // For Statistics least purchased item border container
 export const leastPurchasedObj = {
-    url: "http://localhost:3000/getLeastPurchased"
+    url: "https://fai-stock-managment.herokuapp.com/getLeastPurchased"
 }
 
 export const lpObj = {
@@ -83,8 +83,8 @@ export const orderButtonObj = {
     hoverNotColor: '#00ADEE',
     notLeft: '1050px',
     notTop: '950px',
-    url: "http://localhost:3000/getCompletedOrders",
-    urlUpdate: "http://localhost:3000/updateOrderStatus"
+    url: "https://fai-stock-managment.herokuapp.com/getCompletedOrders",
+    urlUpdate: "https://fai-stock-managment.herokuapp.com/updateOrderStatus"
 }
 
 // For Orders completed orders list border container

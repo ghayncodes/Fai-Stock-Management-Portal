@@ -1,5 +1,5 @@
 import * as React from 'react';
-import TitleIcon from '../assets/TitleIcon';
+import TitleIcon from '../assets/titleIcon';
 
 import {
     BorderContainer,
